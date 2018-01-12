@@ -1,7 +1,7 @@
 # hacker-text
 A simple Javascript plugin that animates text to look like it's decoding.
 
-To use simply include the hacker-text.js in a script tag on your website, and add the class '.hacker-text' to any body of text such as &lt;h1&gt;, &lt;p&gt;, &lt;spans&gt; etc.
+To use simply include the hacker-text.js in a script tag on your website, and add the class '.hacker-text' to any body of text such as &lt;h1&gt;, &lt;p&gt;, &lt;span&gt; etc.
   
 To change the speed of the decoding add one of the following classes:
 <ul>
