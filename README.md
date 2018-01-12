@@ -12,14 +12,23 @@ To change the speed of the decoding add one of the following classes:
   
 There are currently three decoding styles.
 
-default (No Class):
-  Where random characters are decoded in any order.
-  
-type (add '.hacker-text-type' class):
-  Where the text is decoded in order with a | character at the end, as if it's typing.
-  
-stars (add '.hacker-text-stars' class):
-  Where the text is converted to astericks and then decoded in order.  
+<ul>
+  <li>default</li>
+    <ul>
+      <li>No Class</li>
+      <li>Where random characters are decoded in any order.</li>
+    </ul>
+  <li>type</li>
+    <ul>
+      <li>add '.hacker-text-stars' class</li>
+      <li>Where the text is decoded in order with a | character at the end, as if it's typing.</li>
+    </ul>
+  <li>stars</li>
+    <ul>
+      <li>add '.hacker-text-stars' class</li>
+      <li>Where the text is converted to astericks and then decoded in order. </li>
+    </ul>
+</ul>
 
 
 Visit http://www.simplehacker.co.uk/hacker-text for examples.
