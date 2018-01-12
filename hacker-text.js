@@ -7,7 +7,7 @@
 // A javascript plugin that animates text to make it look like it's decoding.
 // Simply add the class .hacker-text to any element with textContent
 // For more information visit docs at http://www.simplehacker.co.uk/hacker-text
-// Or visit the Github Repository https://github.com/simpehacker/hacker-text
+// Or visit the Github Repository https://github.com/simple-hacker/hacker-text
 
 
 const eChars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","0","1","2","3","4","5","6","7","8","9"," ",",",".","-","'"];
@@ -21,10 +21,10 @@ let pageDecoded;
 qSA.forEach(function(el, index){ //el is the element
 
     const originalText = el.textContent.toUpperCase(); 
-    let hackerText; //This is the endcoded text.
+    let hackerText = ''; //This is the endcoded text.
     let speed; // The decoding speed, determined by classList hacker-text-slow, hacker-text-medium, hacker-text-fast.
     let mode = 'default';
-    hackerText = encodeText(originalText); // Encode the text
+    
 
     if (el.classList.contains('hacker-text-slow')) {
         speed = 20;
@@ -38,7 +38,13 @@ qSA.forEach(function(el, index){ //el is the element
 
     if (el.classList.contains('hacker-text-type')) {
         mode = 'type';
-        hackerText = '';
+    } else if (el.classList.contains('hacker-text-stars')) {
+        mode = 'stars';
+        for (i = 0; i < originalText.length; i++) {
+            hackerText += "*"; //Add *'s for originalText length
+        }
+    } else {
+        hackerText = encodeText(originalText); // Encode the text
     }
 
     // Create Object to keep track of the originalTexts and encoded hackerTexts
@@ -52,6 +58,7 @@ qSA.forEach(function(el, index){ //el is the element
     }
 
     hackerTexts.push(hackerTextObj);
+
 });
 
 
@@ -83,6 +90,8 @@ function runDecoding(obj) {
 
             if (obj['mode'] === 'type') {
                 decodeType(obj);
+            } else if (obj['mode'] === 'stars') {
+                decodeStars(obj);
             } else {
                 decode(obj);
             }
@@ -104,8 +113,7 @@ function decode(obj) {
     } while (obj['hackerText'][randPos] == obj['originalText'][randPos])
 
     // Get random Character
-    randCharNum = Math.floor((Math.random() * (eChars.length)));
-    randChar = eChars[randCharNum];
+    randChar = getRandChar()
 
     obj['hackerText'] = decodeCharacter(obj['hackerText'], randPos, randChar);
     obj['element'].textContent = obj['hackerText'];
@@ -117,47 +125,80 @@ function decode(obj) {
     }
 }
 
+
 // Decode as it types.
 // ================================================================
 
 function decodeType(obj) {
-    if (obj['element'].textContent.length <= obj['originalText'].length) {
 
-        // Get random Character
-        randCharNum = Math.floor((Math.random() * (eChars.length)));
-        randChar = eChars[randCharNum];
+    const typingChar = "|";
+    let sliceNum = typingChar.length + 1;
 
-        // Get the current str length for hackerText, this is to check indexes of originalText to compare.
-        strLength = obj['hackerText'].length -1;
+    // Get random Character
+    randChar = getRandChar();
 
-        // Firstly remove the previous character.
-        // If randChar is equal to the character at current hackerText length pos of originalText then append the correct randChar to hackerText and another randChar
-        // so that the second gets spliced the next time round.
-        // Else just add one randChar
-        // This gives the illusion of decoding and the string only increases if randChar is equal to the current index of originalText.
-        obj['hackerText'] = obj['hackerText'].slice(0, -1);
+    // Get the current str length for hackerText, this is to check indexes of originalText to compare.
+    strLength = obj['hackerText'].length - sliceNum;
 
-        if (randChar === obj['originalText'][strLength]) {
-            obj['hackerText'] += randChar;
+    // Firstly remove the previous character + the | char.
+    // If randChar is equal to the character at current hackerText length pos of originalText then append the correct randChar to hackerText and another randChar
+    // so that the second gets spliced the next time round.
+    // Else just add one randChar
+    // This gives the illusion of decoding and the string only increases if randChar is equal to the current index of originalText.
+    obj['hackerText'] = obj['hackerText'].slice(0, (sliceNum * -1));
 
-            // Only add the extra character if it hasn't fully decoded yet.
-            if (obj['hackerText'] != obj['originalText']) {
-                obj['hackerText'] += randChar;
-            }
+    if (randChar === obj['originalText'][strLength]) {
+        obj['hackerText'] += randChar;
 
-        } else {
+        // Only add the extra character if it hasn't fully decoded yet.
+        if (obj['hackerText'] != obj['originalText']) {
             obj['hackerText'] += randChar;
         }
 
-        // Display current hackerText in element.
-        obj['element'].textContent = obj['hackerText'];     
+    } else {
+        obj['hackerText'] += randChar;
+    }
 
         // If hackerText and OriginalText are the same then finished decoding so set value to true.
-        if (obj['hackerText'] === obj['originalText']) {
-            obj['decoded'] = true;
-            console.log(`${obj['originalText']} has finished decoding.`);
+    if (obj['hackerText'] === obj['originalText']) {
+        obj['decoded'] = true;
+        console.log(`${obj['originalText']} has finished decoding.`);
+    } else {
+        obj['hackerText'] += typingChar;
+    }
+
+    // Display current hackerText in element.
+    obj['element'].textContent = obj['hackerText'];
+}
+
+
+
+// Decode with stars
+// ================================================================
+
+function decodeStars(obj) {
+    
+    // Get randChar
+    randChar = getRandChar();
+
+    // Loop through length of original text.
+    for (i = 0; i < obj['originalText'].length; i++) {
+
+        // If character at i on both hackerText and originalText not the same then
+        // replace */randChar with another randChar and break out of loop.
+        if (obj['hackerText'][i] != obj['originalText'][i]) {
+            obj['hackerText'] = decodeCharacter(obj['hackerText'], i, randChar);
+            obj['element'].textContent = obj['hackerText'];
+            break;
         }
     }
+
+    // If hackerText and OriginalText are the same then finished decoding so set value to true.
+    if (obj['hackerText'] === obj['originalText']) {
+        obj['decoded'] = true;
+        console.log(`${obj['originalText']} has finished decoding.`);
+    }
+    
 }
 
 
@@ -178,6 +219,12 @@ function allDecoded() {
 
 function decodeCharacter(str, n, t) {
     return str.substring(0, n) + t + str.substring(n + 1);
+}
+
+function getRandChar() {
+    // Get random Character
+    randCharNum = Math.floor((Math.random() * (eChars.length)));
+    return eChars[randCharNum];
 }
 
 function encodeText(str) {
