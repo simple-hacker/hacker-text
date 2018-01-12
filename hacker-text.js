@@ -5,12 +5,13 @@
 // Free for Commerical and Non Commercial Use.
 
 // A javascript plugin that animates text to make it look like it's decoding.
-// Simply add the class .hacker-text to any element with textContent
+// Simply add the class .hacker-text to any element with innerHTML
 // For more information visit docs at http://www.simplehacker.co.uk/hacker-text
 // Or visit the Github Repository https://github.com/simple-hacker/hacker-text
 
 
 const eChars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","0","1","2","3","4","5","6","7","8","9"," ",",",".","-","'"];
+allowedTags = ["div", "span", "h1", "h2", "h3", "h4", "h5", "p", "br", "a", "strong", "em", "li", "b", "i", "u", "pre", "q", "s", "strike", "blockquote", "sub", "sup"];
 
 
 const qSA  = document.querySelectorAll('.hacker-text'); //qSA is QuerySelectorAll
@@ -20,44 +21,49 @@ let pageDecoded;
 
 qSA.forEach(function(el, index){ //el is the element
 
-    const originalText = el.textContent.toUpperCase(); 
-    let hackerText = ''; //This is the endcoded text.
-    let speed; // The decoding speed, determined by classList hacker-text-slow, hacker-text-medium, hacker-text-fast.
-    let mode = 'default';
-    
 
-    if (el.classList.contains('hacker-text-slow')) {
-        speed = 20;
-    } else if (el.classList.contains('hacker-text-medium')) {
-        speed = 10;
-    } else if (el.classList.contains('hacker-text-fast')) {
-        speed = 5;
-    } else {
-        speed = 10; //Default speed is 10;
-    }
+    if (allowedTags.indexOf(el.tagName.toLowerCase()) != -1) {
 
-    if (el.classList.contains('hacker-text-type')) {
-        mode = 'type';
-    } else if (el.classList.contains('hacker-text-stars')) {
-        mode = 'stars';
-        for (i = 0; i < originalText.length; i++) {
-            hackerText += "*"; //Add *'s for originalText length
+        const originalText = el.innerHTML.toUpperCase(); 
+        let hackerText = ''; //This is the endcoded text.
+        let speed; // The decoding speed, determined by classList hacker-text-slow, hacker-text-medium, hacker-text-fast.
+        let mode = 'default';
+        
+
+        if (el.classList.contains('hacker-text-slow')) {
+            speed = 20;
+        } else if (el.classList.contains('hacker-text-medium')) {
+            speed = 10;
+        } else if (el.classList.contains('hacker-text-fast')) {
+            speed = 5;
+        } else {
+            speed = 10; //Default speed is 10;
         }
-    } else {
-        hackerText = encodeText(originalText); // Encode the text
-    }
 
-    // Create Object to keep track of the originalTexts and encoded hackerTexts
-    const hackerTextObj = {
-        element : el,
-        originalText : originalText, //This is the original text value.
-        hackerText : hackerText,
-        decoded : false, //To keep track if it has been decoded.
-        speed : speed,
-        mode : mode
-    }
+        if (el.classList.contains('hacker-text-type')) {
+            mode = 'type';
+        } else if (el.classList.contains('hacker-text-stars')) {
+            mode = 'stars';
+            for (i = 0; i < originalText.length; i++) {
+                hackerText += "*"; //Add *'s for originalText length
+            }
+        } else {
+            hackerText = encodeText(originalText); // Encode the text
+        }
 
-    hackerTexts.push(hackerTextObj);
+        // Create Object to keep track of the originalTexts and encoded hackerTexts
+        const hackerTextObj = {
+            element : el,
+            originalText : originalText, //This is the original text value.
+            hackerText : hackerText,
+            decoded : false, //To keep track if it has been decoded.
+            speed : speed,
+            mode : mode
+        }
+
+        hackerTexts.push(hackerTextObj);
+
+    }
 
 });
 
@@ -65,8 +71,8 @@ qSA.forEach(function(el, index){ //el is the element
 // Loop through array of objects and decode.
 hackerTexts.forEach(function(obj, index) { // obj is the object in the array of objects
 
-    // Change textContent to the encoded Hacker Text.
-    obj['element'].textContent = obj['hackerText'];
+    // Change innerHTML to the encoded Hacker Text.
+    obj['element'].innerHTML = obj['hackerText'];
 
     // This runs the decoding.
     decodeInterval.push(setInterval(runDecoding, obj['speed'], obj));
@@ -116,7 +122,7 @@ function decode(obj) {
     randChar = getRandChar()
 
     obj['hackerText'] = decodeCharacter(obj['hackerText'], randPos, randChar);
-    obj['element'].textContent = obj['hackerText'];
+    obj['element'].innerHTML = obj['hackerText'];
 
     // If hackerText and OriginalText are the same then finished decoding so set value to true.
     if (obj['hackerText'] === obj['originalText']) {
@@ -168,7 +174,7 @@ function decodeType(obj) {
     }
 
     // Display current hackerText in element.
-    obj['element'].textContent = obj['hackerText'];
+    obj['element'].innerHTML = obj['hackerText'];
 }
 
 
@@ -188,7 +194,7 @@ function decodeStars(obj) {
         // replace */randChar with another randChar and break out of loop.
         if (obj['hackerText'][i] != obj['originalText'][i]) {
             obj['hackerText'] = decodeCharacter(obj['hackerText'], i, randChar);
-            obj['element'].textContent = obj['hackerText'];
+            obj['element'].innerHTML = obj['hackerText'];
             break;
         }
     }
