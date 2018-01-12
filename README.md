@@ -18,3 +18,6 @@ type (add '.hacker-text-type' class):
   
 stars (add '.hacker-text-stars' class):
   Where the text is converted to astericks and then decoded in order.  
+
+
+Visit http://www.simplehacker.co.uk/hacker-text for examples.
