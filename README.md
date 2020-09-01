@@ -34,4 +34,4 @@ There are currently three decoding styles.
 </ul>
 
 
-Visit http://www.simplehacker.co.uk/hacker-text for examples.
+Visit https://simplehacker.co.uk/hacker-text for examples.
